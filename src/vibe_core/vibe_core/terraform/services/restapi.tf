@@ -2,11 +2,19 @@ locals {
   restapi_common_args = [
     "--port=3000",
   ]
-  restapi_extra_args = [
-    "--logdir=${var.log_dir}",
-    "--terravibes-host-assets-dir=${var.host_assets_dir}",
-    "--loglevel=${var.farmvibes_log_level}",
-  ]
+  restapi_extra_args = concat(
+    [
+      "--logdir=${var.log_dir}",
+      "--terravibes-host-assets-dir=${var.host_assets_dir}",
+      "--loglevel=${var.farmvibes_log_level}",
+    ],
+    var.max_log_file_bytes != "" ? [
+        "--max-log-file-bytes=${var.max_log_file_bytes}",
+    ] : [],
+    var.log_backup_count != "" ? [
+        "--log-backup-count=${var.log_backup_count}",
+    ] : [],
+  )
 }
 
 resource "kubernetes_deployment" "restapi" {
@@ -15,6 +23,7 @@ resource "kubernetes_deployment" "restapi" {
     namespace = var.namespace
     labels = {
       app = "terravibes-rest-api"
+      backend = "terravibes"
     }
   }
 
@@ -170,6 +179,13 @@ resource "kubernetes_ingress_v1" "restapi" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["acme.cert-manager.io/http01-edit-in-place"],
+      metadata[0].annotations["cert-manager.io/cluster-issuer"],
+    ]
+  }
+
   depends_on = [kubernetes_service.restapi]
 }
 
@@ -177,14 +193,24 @@ resource "kubernetes_annotations" "rest_api_annotations" {
   count       = var.local_deployment ? 0 : 1
   api_version = "networking.k8s.io/v1"
   kind        = "Ingress"
+
   metadata {
     name      = "terravibes-rest-api-ingress"
     namespace = var.namespace
   }
+
   annotations = {
     "cert-manager.io/cluster-issuer"            = "letsencrypt"
     "acme.cert-manager.io/http01-edit-in-place" = "true"
   }
+
+  lifecycle {
+    ignore_changes = [
+      annotations["acme.cert-manager.io/http01-edit-in-place"],
+      annotations["cert-manager.io/cluster-issuer"],
+    ]
+  }
+
   depends_on = [
     kubernetes_ingress_v1.restapi
   ]

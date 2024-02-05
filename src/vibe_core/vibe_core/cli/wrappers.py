@@ -1,14 +1,18 @@
 import hashlib
 import json
 import os
+import platform
+import re
 import shutil
 import tempfile
+import time
 from contextlib import contextmanager
+from functools import partialmethod
 from typing import Any, Dict, List, Optional, Tuple
 
 from .constants import RABBITMQ_IMAGE_TAG, REDIS_IMAGE_TAG
 from .helper import execute_cmd, is_port_free, log_should_be_logged_in, verify_to_proceed
-from .logging import log
+from .logging import ColorFormatter, log
 from .osartifacts import OSArtifacts
 
 AZ_CREDS_REFRESH_ATTEMPTS = 2
@@ -16,6 +20,7 @@ AZ_LOGIN_PROMPT = "`az login`"
 TOTAL_REGIONAL_CPU_NAME = "Total Regional vCPUs"
 WORKER_NODE_CPU_NAME = "Standard DSv3 Family vCPUs"
 DEFAULT_NODE_CPU_NAME = "Standard BS Family vCPUs"
+REGISTERED = "Registered"
 
 AZURE_RESOURCES_REQUIRED = [
     "Microsoft.DocumentDB",
@@ -56,41 +61,76 @@ spec:
 """
 
 
+def on_windows() -> bool:
+    return platform.system() == "Windows"
+
+
 class TerraformWrapper:
     STATE_CONTAINER_NAME = "terraform-state"
     INFRA_STATE_FILE = "infra.tfstate"
+    ANSI_ESCAPE_PAT = re.compile(r"\x1B[@-_][0-?]*[ -/]*[@-~]")
+    REPLACEMENT_PAT = re.compile(r"#\s+(.*)\s+must\s+be\s+replaced")
+    REPLACEMENT_SUBSTRINGS = [
+        "cosmosdb",
+        "storageaccount",
+    ]
 
     def __init__(self, os_artifacts: OSArtifacts, az: Optional["AzureCliWrapper"] = None):
         self.az = az
         self.os_artifacts = os_artifacts
 
-    def apply(
+    def _get_replacements(self, plan: str) -> List[str]:
+        plan = self.ANSI_ESCAPE_PAT.sub("", plan)
+        return self.REPLACEMENT_PAT.findall(plan)
+
+    def _has_storage_replacement(self, replacements: List[str]) -> bool:
+        return any([s in r for s in self.REPLACEMENT_SUBSTRINGS for r in replacements])
+
+    def _plan_or_apply(
         self,
         working_directory: str,
         state_file: str,
         variables: Dict[str, str],
         refresh_creds: bool = True,
+        plan: bool = False,
+        plan_file: str = "",
     ):
         if refresh_creds:
             assert self.az is not None, "AzureCliWrapper must be provided to refresh credentials"
             self.az.refresh_az_creds()
-        log(f"Applying terraform in {working_directory}")
+        log(f"{'Planning' if plan else 'Applying'} terraform in {working_directory}")
         command = [
             self.os_artifacts.terraform,
             f"-chdir={working_directory}",
-            "apply",
+            "plan" if plan else "apply",
             f"-state={state_file}",
-            "-auto-approve",
         ]
-        for v in variables.keys():
-            command += ["-var", f"{v}={variables[v]}"]
-        execute_cmd(
+        if not plan:
+            command += ["-auto-approve"]
+        if plan_file:
+            if plan:
+                command += [f"-out={plan_file}"]
+            else:
+                command += ["-input=false", plan_file]
+        if plan or not plan_file:
+            for k, v in variables.items():
+                if "path" in k:
+                    v = v.replace("\\", "/")
+                command += ["-var", f"{k}={v}"]
+        stdout = execute_cmd(
             command,
-            True,
-            False,
-            f"Failed to apply terraform resources in {working_directory}",
-            capture_output=False,
+            check_return_code=True,
+            check_empty_result=False,
+            error_string=(
+                f"Failed to {'plan' if plan else 'apply'} terraform resources "
+                f"in {working_directory}"
+            ),
+            capture_output=True,
         )
+        return stdout
+
+    plan = partialmethod(_plan_or_apply, plan=True)
+    apply = partialmethod(_plan_or_apply, plan=False)
 
     def get_output(
         self,
@@ -144,7 +184,17 @@ class TerraformWrapper:
         with tempfile.TemporaryDirectory() as temp_dir:
             if backend_config:
                 f = tempfile.NamedTemporaryFile(mode="w", dir=temp_dir, delete=False)
-                f.write("\n".join([f'{k} = "{v}"' for k, v in backend_config.items()]))
+                contents = "\n".join([f'{k} = "{v}"' for k, v in backend_config.items()])
+                if on_windows:
+                    log(
+                        (
+                            "We're on Windows, replacing backslashes in backend file "
+                            f"{f.name} with forward slashes"
+                        ),
+                        "debug"
+                    )
+                    contents = contents.replace("\\", "/")
+                f.write(contents)
                 f.close()
                 command += [f"-backend-config={f.name}"]
 
@@ -172,7 +222,9 @@ class TerraformWrapper:
             "prefix": cluster_name,
             "resource_group_name": resource_group_name,
         }
-        state_file = self.os_artifacts.get_terraform_file("rg.tfstate")
+        state_file = self.os_artifacts.get_terraform_file(
+            "rg.tfstate", cluster_name, resource_group_name
+        )
         log("Creating resource group if necessary...")
         try:
             self.apply(rg_directory, state_file, variables)
@@ -194,6 +246,7 @@ class TerraformWrapper:
         container_name: str,
         storage_access_key: str,
         cleanup_state: bool = False,
+        is_update: bool = False,
     ):
         infra_directory = os.path.join(self.os_artifacts.aks_directory, "modules", "infra")
         log("Executing terraform to build out infrastructure (this may take up to 30 minutes)...")
@@ -220,12 +273,44 @@ class TerraformWrapper:
             "resource_group_name": resource_group,
         }
 
-        state_file = self.os_artifacts.get_terraform_file(self.INFRA_STATE_FILE)
-        self.apply(infra_directory, state_file, variables)
-        return self.get_output(infra_directory, state_file)
+        state_file = self.os_artifacts.get_terraform_file(
+            self.INFRA_STATE_FILE, cluster_name, resource_group
+        )
+        with tempfile.NamedTemporaryFile(delete=False) as plan_file:
+            plan = self.plan(infra_directory, state_file, variables, plan_file=plan_file.name)
+            replacements = self._get_replacements(plan)
+            needs_restart = False
+            if replacements:
+                log(
+                    f"Terraform plan requires replacement of resources {', '.join(replacements)}..."
+                )
+                proceed = True
+                needs_restart = True
+                if self._has_storage_replacement(replacements):
+                    proceed = verify_to_proceed(
+                        "\nCluster storage is being replaced. "
+                        f"{ColorFormatter.red}This will result in data loss!!!"
+                        f"{ColorFormatter.reset} Please backup your data before proceeding. "
+                        "Would you like to continue?"
+                    )
+                else:
+                    proceed = verify_to_proceed(
+                        f"Some resources ({', '.join(replacements)}) will be replaced, "
+                        "but your data should be safe. Would you like to continue?"
+                    )
+                if not proceed:
+                    raise RuntimeError("Cancelation Requested")
+                else:
+                    log("Continuing with terraform apply...")
+            apply = self.apply(infra_directory, state_file, variables, plan_file=plan_file.name)
+            if is_update and (needs_restart or "azurerm_key_vault_secret" in apply):
+                kubectl = KubectlWrapper(self.os_artifacts, cluster_name)
+                kubectl.restart("deployment", selectors=["backend=terravibes"])
+            return self.get_output(infra_directory, state_file)
 
     def ensure_k8s_cluster(
         self,
+        cluster_name: str,
         tenant_id: str,
         registry_path: str,
         registry_username: str,
@@ -284,7 +369,9 @@ class TerraformWrapper:
             "certificate_email": certificate_email,
         }
 
-        state_file = self.os_artifacts.get_terraform_file("kubernetes.tfstate")
+        state_file = self.os_artifacts.get_terraform_file(
+            "kubernetes.tfstate", cluster_name, resource_group
+        )
         self.apply(kubernetes_directory, state_file, variables)
 
         return self.get_output(kubernetes_directory, state_file)
@@ -292,6 +379,7 @@ class TerraformWrapper:
     def ensure_services(
         self,
         cluster_name: str,
+        resource_group: str,
         registry_path: str,
         kubernetes_config_path: str,
         kubernetes_config_context: str,
@@ -332,7 +420,9 @@ class TerraformWrapper:
             "farmvibes_log_level": log_level,
         }
 
-        state_file = self.os_artifacts.get_terraform_file("services.tfstate")
+        state_file = self.os_artifacts.get_terraform_file(
+            "services.tfstate", cluster_name, resource_group
+        )
         self.apply(services_directory, state_file, variables)
 
         return self.get_output(services_directory, state_file)
@@ -342,6 +432,8 @@ class TerraformWrapper:
         cluster_name: str,
         registry: str,
         log_level: str,
+        max_log_file_bytes: Optional[int],
+        log_backup_count: Optional[int],
         image_tag: str,
         image_prefix: str,
         data_path: str,
@@ -367,9 +459,11 @@ class TerraformWrapper:
             "redis_image_tag": redis_image_tag,
             "rabbitmq_image_tag": rabbitmq_image_tag,
             "farmvibes_log_level": log_level,
+            "max_log_file_bytes": f"{max_log_file_bytes}" if max_log_file_bytes else "",
+            "log_backup_count": f"{log_backup_count}" if log_backup_count else "",
         }
 
-        state_file = self.os_artifacts.get_terraform_file("local.tfstate")
+        state_file = self.os_artifacts.get_terraform_file("local.tfstate", cluster_name)
         self.apply(
             self.os_artifacts.local_directory,
             state_file,
@@ -465,7 +559,9 @@ class TerraformWrapper:
     def get_infra_results(self, cluster_name: str, resource_group: str):
         try:
             with self.workspace(f"farmvibes-aks-{cluster_name}-{resource_group}"):
-                state_file = self.os_artifacts.get_terraform_file(self.INFRA_STATE_FILE)
+                state_file = self.os_artifacts.get_terraform_file(
+                    self.INFRA_STATE_FILE, cluster_name, resource_group
+                )
                 infra_directory = os.path.join(self.os_artifacts.aks_directory, "modules", "infra")
                 results = self.get_output(infra_directory, state_file)
                 return results
@@ -558,6 +654,7 @@ class AzureCliWrapper:
                 capture_output=True,
                 error_string=error,
                 subprocess_log_level="debug",
+                log_error=False,
             )
             return True
         except Exception:
@@ -700,8 +797,9 @@ class AzureCliWrapper:
             ]
             error = f"{provider} resource provider not registered"
             result = execute_cmd(cmd, True, True, error, subprocess_log_level="debug")
-            if result != "Registered":
-                raise ValueError(error)
+            if result != REGISTERED:
+                if not self.maybe_register_provider(provider):
+                    raise ValueError(error)
 
             cmd = [
                 self.os_artifacts.az,
@@ -718,6 +816,48 @@ class AzureCliWrapper:
             result = execute_cmd(cmd, True, True, error, subprocess_log_level="debug")
             if expanded_region not in result:
                 raise ValueError(error)
+
+    def maybe_register_provider(self, provider: str):
+        proceed = verify_to_proceed(
+            f'Provider "{provider}" is not registered on your subscription. '
+            "Do you want me to register it for you?"
+        )
+        if not proceed:
+            return
+        return self.register_provider(provider)
+
+    def register_provider(self, provider: str, max_tries: int = 30, wait_s: int = 10):
+        error = f'Unable to register provider "{provider}". You might have to register it manually.'
+        cmd = [
+            self.os_artifacts.az,
+            "provider",
+            "register",
+            "-n",
+            provider,
+        ]
+        execute_cmd(cmd, True, True, error, subprocess_log_level="debug")
+        tries = 0
+        registered = False
+        cmd = [
+            self.os_artifacts.az,
+            "provider",
+            "show",
+            "-n",
+            provider,
+            "--query",
+            "registrationState",
+            "-o",
+            "tsv",
+        ]
+        while not registered and tries < max_tries:
+            result = execute_cmd(cmd, True, True, error, subprocess_log_level="debug")
+            registered = result == REGISTERED
+            tries += 1
+            if registered:
+                break
+            time.sleep(wait_s)
+        log(error, "warning")
+        return registered
 
     def verify_enough_cores_available(
         self,
@@ -1254,6 +1394,24 @@ class KubectlWrapper:
             )
         )
 
+    def restart(self, kind: str, selectors: List[str] = [], name: str = "", cluster_name: str = ""):
+        if not name and not selectors:
+            raise ValueError("Either name or selectors must be provided")
+        if name and selectors:
+            raise ValueError("Either name or selectors must be provided, but not both")
+        cluster_name = self._actual_cluster_name(cluster_name)
+        cmd = [self.os_artifacts.kubectl, "rollout", "restart", kind]
+        if name:
+            cmd += [name]
+        else:
+            cmd += ["-l", ",".join(selectors)]
+        execute_cmd(
+            cmd,
+            error_string=f"Unable to restart {kind} with selectors {selectors}",
+            subprocess_log_level="debug",
+        )
+        return True
+
 
 class K3dWrapper:
     CONTAINERD_IMAGE_PATH = "/var/lib/rancher/k3s/agent/containerd/io.containerd.content.v1.content"
@@ -1415,6 +1573,7 @@ class K3dWrapper:
                 check_empty_result=False,
                 capture_output=False,
                 error_string=error,
+                env_vars={"K3D_FIX_DNS": "1"},
             )
             log("Cluster created successfully")
         return True

@@ -6,7 +6,6 @@ resource "azurerm_kubernetes_cluster" "kubernetes" {
   name                      = var.prefix
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  kubernetes_version        = "1.26.3"
   dns_prefix                = "${var.prefix}kbsdns"
   automatic_channel_upgrade = "patch"
 
@@ -59,6 +58,12 @@ resource "azurerm_kubernetes_cluster_node_pool" "kubernetes-worker" {
   max_count             = var.max_worker_nodes
   os_sku                = "Mariner"
   depends_on            = [azurerm_kubernetes_cluster.kubernetes]
+
+  lifecycle {
+    ignore_changes = [
+      vnet_subnet_id,
+    ]
+  }
 }
 
 resource "local_file" "kubeconfig" {

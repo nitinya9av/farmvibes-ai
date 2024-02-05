@@ -32,6 +32,13 @@ We organize available notebooks in the following topics:
 
 </details>
 <details>
+<summary> BingMaps </summary>
+
+- [`Segment Anything Model Workflow (BingMaps basemap)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/basemap_segmentation.ipynb)
+
+
+</details>
+<details>
 <summary> Crop Analysis </summary>
 
 - [`Harvest and germination periods` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/harvest_period/ndvi_summary.ipynb)
@@ -55,22 +62,29 @@ We organize available notebooks in the following topics:
 
 
 </details>
+
 <details>
 <summary> Index Computation </summary>
 
 - [`Crop cycle detection` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/crop_cycles/crop_cycles.ipynb)
 
+- [`Field-level spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/field_level_spectral_indices.ipynb)
+
 - [`Harvest and germination periods` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/harvest_period/ndvi_summary.ipynb)
+
+- [`Irrigation classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/irrigation_classification.ipynb)
 
 - [`Land degradation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/land_degradation/land_degradation.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
+- [`Nutrient Heatmap Estimation - Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
+- [`Nutrient Heatmap Estimation - Neighbors` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
 
 - [`Nutrient Heatmap Estimation with ADMAg integration` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification_admag.ipynb)
 
-- [`Optimal Location` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
+- [`Optimal Sensor Placement` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
+
+- [`Optimal Sensor Placement over Segmented Crop Field` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations_segmentation.ipynb)
 
 - [`Spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/spectral_indices.ipynb)
 
@@ -80,6 +94,8 @@ We organize available notebooks in the following topics:
 </details>
 <details>
 <summary> Landsat </summary>
+
+- [`Irrigation classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/irrigation_classification.ipynb)
 
 - [`Land degradation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/land_degradation/land_degradation.ipynb)
 
@@ -96,13 +112,13 @@ We organize available notebooks in the following topics:
 
 - [`Micro climate prediction` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/deepmc/mc_forecast.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
+- [`Nutrient Heatmap Estimation - Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
+- [`Nutrient Heatmap Estimation - Neighbors` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
 
 - [`Nutrient Heatmap Estimation with ADMAg integration` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification_admag.ipynb)
 
-- [`Optimal Location` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
+- [`Optimal Sensor Placement` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
 
 - [`Weed detection` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/weed_detection/weed_detection.ipynb)
 
@@ -138,13 +154,21 @@ We organize available notebooks in the following topics:
 
 - [`Field boundary segmentation (SAM exploration)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_exploration.ipynb)
 
+- [`Field-level Irrigation Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/field_level_irrigation_classification.ipynb)
+
+- [`Field-level spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/field_level_spectral_indices.ipynb)
+
 - [`Harvest and germination periods` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/harvest_period/ndvi_summary.ipynb)
 
-- [`Investigating Amazon Rainforest deforestation with SpaceEye` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/sentinel_spaceeye.ipynb)
+- [`Irrigation classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/irrigation_classification.ipynb)
 
 - [`Land degradation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/land_degradation/land_degradation.ipynb)
 
-- [`Segment Anything Model Workflow` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_workflow.ipynb)
+- [`Optimal Sensor Placement over Segmented Crop Field` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations_segmentation.ipynb)
+
+- [`Segment Anything Model Workflow (BingMaps basemap)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/basemap_segmentation.ipynb)
+
+- [`Segment Anything Model Workflow (Sentinel-2)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sentinel2_segmentation.ipynb)
 
 - [`Spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/spectral_indices.ipynb)
 
@@ -159,7 +183,15 @@ We organize available notebooks in the following topics:
 
 - [`Field boundary segmentation (SAM exploration)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_exploration.ipynb)
 
-- [`Segment Anything Model Workflow` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_workflow.ipynb)
+- [`Field-level Irrigation Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/field_level_irrigation_classification.ipynb)
+
+- [`Field-level spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/field_level_spectral_indices.ipynb)
+
+- [`Optimal Sensor Placement over Segmented Crop Field` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations_segmentation.ipynb)
+
+- [`Segment Anything Model Workflow (BingMaps basemap)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/basemap_segmentation.ipynb)
+
+- [`Segment Anything Model Workflow (Sentinel-2)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sentinel2_segmentation.ipynb)
 
 
 </details>
@@ -168,17 +200,21 @@ We organize available notebooks in the following topics:
 
 - [`Field boundary segmentation (SAM exploration)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_exploration.ipynb)
 
+- [`Field-level spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/field_level_spectral_indices.ipynb)
+
 - [`Investigating Amazon Rainforest deforestation with SpaceEye` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/sentinel_spaceeye.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
+- [`Nutrient Heatmap Estimation - Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
+- [`Nutrient Heatmap Estimation - Neighbors` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
 
 - [`Nutrient Heatmap Estimation with ADMAg integration` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification_admag.ipynb)
 
-- [`Optimal Location` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
+- [`Optimal Sensor Placement` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
 
-- [`Segment Anything Model Workflow` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_workflow.ipynb)
+- [`Optimal Sensor Placement over Segmented Crop Field` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations_segmentation.ipynb)
+
+- [`Segment Anything Model Workflow (Sentinel-2)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sentinel2_segmentation.ipynb)
 
 - [`Spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/spectral_indices.ipynb)
 
@@ -188,6 +224,8 @@ We organize available notebooks in the following topics:
 <summary> SpaceEye </summary>
 
 - [`Crop cycle detection` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/crop_cycles/crop_cycles.ipynb)
+
+- [`Field-level spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/field_level_spectral_indices.ipynb)
 
 - [`Investigating Amazon Rainforest deforestation with SpaceEye` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/sentinel_spaceeye.ipynb)
 
@@ -202,13 +240,15 @@ We organize available notebooks in the following topics:
 
 - [`Green House Gas fluxes` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/ghg_fluxes/ghg_fluxes.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
+- [`Nutrient Heatmap Estimation - Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
+- [`Nutrient Heatmap Estimation - Neighbors` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
 
 - [`Nutrient Heatmap Estimation with ADMAg integration` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification_admag.ipynb)
 
-- [`Optimal Location` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
+- [`Optimal Sensor Placement` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
+
+- [`Optimal Sensor Placement over Segmented Crop Field` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations_segmentation.ipynb)
 
 - [`What-if analysis of carbon sequestration` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/carbon/whatif.ipynb)
 
@@ -223,6 +263,8 @@ We organize available notebooks in the following topics:
 </details>
 <details>
 <summary> Water Management </summary>
+
+- [`Field-level Irrigation Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/field_level_irrigation_classification.ipynb)
 
 - [`Irrigation classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/irrigation_classification.ipynb)
 
@@ -259,15 +301,13 @@ We organize available notebooks in the following topics:
 
 - [`Integration with ADMAg to compute NDVI summary` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/admag/azure_data_manager_for_agriculture_example.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
+- [`Nutrient Heatmap Estimation - Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb)
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
+- [`Nutrient Heatmap Estimation - Neighbors` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb)
 
 - [`Nutrient Heatmap Estimation with ADMAg integration` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification_admag.ipynb)
 
-- [`Optimal Location` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
-
-- [`Segment Anything Model Workflow` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_workflow.ipynb)
+- [`Optimal Sensor Placement` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb)
 
 - [`Spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/spectral_indices.ipynb)
 
@@ -302,6 +342,10 @@ We organize available notebooks in the following topics:
 
 - [`Field boundary segmentation (SAM exploration)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_exploration.ipynb) : Segment Anything Model exploration over FarmVibes.AI data to segment crop field boundaries.
 
+- [`Field-level Irrigation Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/irrigation/field_level_irrigation_classification.ipynb) : Estimate an irrigation probability map over crop fields segmented with Segment Anything Model.
+
+- [`Field-level spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/field_level_spectral_indices.ipynb) : Compute and visualize spectral indices over crop fields segmented from Sentinel-2 and SpaceEye imagery.
+
 - [`Green House Gas fluxes` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/ghg_fluxes/ghg_fluxes.ipynb)  (30s) : Compute GHG emissions and sequestration for a given crop, location and time range.
 
 - [`Harvest and germination periods` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/harvest_period/ndvi_summary.ipynb) : Infer harvest and germination periods from NDVI time series.
@@ -318,15 +362,19 @@ We organize available notebooks in the following topics:
 
 - [`Micro climate prediction` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/deepmc/mc_forecast.ipynb) : Train a model to predict micro climate parameters given global weather information and local weather station data.
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb) : Using soil samples from a farm, train a Random Forest model to estimate a heatmap of soil nutrients.
+- [`Nutrient Heatmap Estimation - Classification` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification.ipynb) : Using soil samples from a farm, train a Random Forest model to estimate a heatmap of soil nutrients.
 
-- [`Nutrient Heatmap Estimation` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb) : Using soil samples from a farm, train a Random Forest model to estimate a heatmap of soil nutrients.
+- [`Nutrient Heatmap Estimation - Neighbors` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_neighbors.ipynb) : Estimate a heatmap of soil nutrients based on neighboring soil samples with location suggested by an optimal sensor placement workflow.
 
 - [`Nutrient Heatmap Estimation with ADMAg integration` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/heatmaps/nutrients_using_classification_admag.ipynb)  (~1GB, <1 minute) : Using soil samples from a farm retrieved with ADMAg, train a Random Forest model to estimate a heatmap of soil nutrients.
 
-- [`Optimal Location` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb) : Helps to find optimal locations using satellite imagery. The optimal locations identified can be used to collect soil properties by installing sensors  or performing other manual operations
+- [`Optimal Sensor Placement` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations.ipynb) : Helps to find optimal sensor placement location using satellite imagery. The optimal locations identified can be used to collect soil properties by installing sensors or performing other manual operations
 
-- [`Segment Anything Model Workflow` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sam_workflow.ipynb) : Segment Sentinel-2 imagery with SAM workflow.
+- [`Optimal Sensor Placement over Segmented Crop Field` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sensor/optimal_locations_segmentation.ipynb) : Segment a field with Segment Anything Model over Sentinel-2 imagery and estimate optimal sensor placement for the segmented region.
+
+- [`Segment Anything Model Workflow (BingMaps basemap)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/basemap_segmentation.ipynb) : Segment BingMaps basemaps with SAM workflow.
+
+- [`Segment Anything Model Workflow (Sentinel-2)` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/segment_anything/sentinel2_segmentation.ipynb) : Segment Sentinel-2 imagery with SAM workflow.
 
 - [`Spectral indices` 📓](https://github.com/microsoft/farmvibes-ai/blob/main/notebooks/sentinel/spectral_indices.ipynb) : Compute and visualize spectral indices from Sentinel-2 imagery.
 
